@@ -27,7 +27,7 @@ class ClienteOllama:
             "stream": False
         }
         try:
-            response = requests.post(f"{self.base_url}/api/generate", json=payload, timeout=45)
+            response = requests.post(f"{self.base_url}/api/generate", json=payload, timeout=120)
             if response.status_code == 200:
                 return response.json().get("response", "Sin respuesta.")
             else:
