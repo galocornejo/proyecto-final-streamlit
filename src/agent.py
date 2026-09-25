@@ -16,13 +16,12 @@ class AgenteDatos:
         mediana_tenure = df['tenure'].median() if 'tenure' in df.columns else 0
         
         contexto = f"""
-        [CONTEXTO DEL DATASET - TELCO CUSTOMER CHURN]
-        - Registros totales: {total_filas}
-        - Total de columnas: {total_cols}
+        [CONTEXTO DE NEGOCIO - TELCO CUSTOMER CHURN]
+        - Registros analizados: {total_filas}
         - Tasa general de cancelación (Churn): {tasa_churn:.2f}%
-        - Promedio de cobro mensual (MonthlyCharges): ${promedio_mensual:.2f}
-        - Mediana de permanencia en meses (tenure): {mediana_tenure} meses
-        - Principales variables: Contract, PaymentMethod, InternetService, tenure, MonthlyCharges, TotalCharges, Churn.
+        - Promedio de cobro mensual: ${promedio_mensual:.2f}
+        - Mediana de permanencia: {mediana_tenure} meses
+        - Foco principal: Inductores de abandono por tipo de contrato y servicios contratados.
         """
         return contexto
 

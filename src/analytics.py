@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 def missing_report(df: pd.DataFrame) -> pd.DataFrame:
     report = pd.DataFrame({
         "variable": df.columns,
+        "tipo": [str(df[col].dtype) for col in df.columns],
         "nulos": df.isna().sum().values,
         "porcentaje": (df.isna().mean().values * 100).round(2),
     })
@@ -114,3 +115,13 @@ def build_agent_context(df: pd.DataFrame, target: str, model_result: dict | None
             "n_test": model_result["n_test"],
         }
     return context
+
+def analizar_churn_por_grupo(df: pd.DataFrame, grupo_col: str) -> pd.DataFrame:
+    """
+    Calcula la tasa de Churn segmentada por una variable categórica clave del negocio.
+    """
+    if grupo_col not in df.columns or 'Churn' not in df.columns:
+        return pd.DataFrame()
+    
+    tabla = pd.crosstab(df[grupo_col], df['Churn'], normalize='index') * 100
+    return tabla.round(2).reset_index()
