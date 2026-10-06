@@ -1,95 +1,78 @@
-# Demo de Proyecto Final · Streamlit + Ollama + Scikit-learn
+# 📊 Sistema Analítico de Retención de Clientes (Telco Churn)
 
-Ejemplo básico para clase del módulo **Paradigmas de Programación para Inteligencia Artificial y Análisis de Datos**.
+Proyecto final desarrollado para el módulo **Paradigmas de Programación para Inteligencia Artificial y Análisis de Datos**.
 
 ## Caso de demostración
 
-Se utiliza el dataset de regresión **Diabetes** incluido en Scikit-learn. El CSV se genera desde `sklearn.datasets.load_diabetes(scaled=False)` y se entrega dentro de `data/diabetes_sklearn.csv`, por lo que el demo puede ejecutarse sin descargar el dataset desde Internet.
+Se utiliza el dataset **Telco Customer Churn**, orientado al análisis predictivo y la retención de clientes en empresas de telecomunicaciones. El archivo se encuentra ubicado dentro de `data/Telco-Customer-Churn.csv`, permitiendo ejecutar la aplicación de forma completamente local.
 
-Documentación oficial del dataset:
-https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_diabetes.html
-
-> Este demo es exclusivamente académico. El dataset se utiliza para ilustrar análisis de datos y regresión; no debe interpretarse como una herramienta clínica o diagnóstica.
+> Este proyecto es de carácter estrictamente académico. Está diseñado para ilustrar flujos analíticos, ciencia de datos modular, modelado predictivo y la integración de asistentes conversacionales con Inteligencia Artificial local.
 
 ## Qué demuestra
 
-- Carga de un CSV incluido o de un CSV propio.
-- Perfil general y calidad de datos.
-- Exploración de variables y correlaciones.
-- Visualizaciones interactivas con Plotly.
-- Modelo básico de regresión lineal.
-- Funciones reutilizables organizadas por módulos.
-- Clase `LocalDataAgent` para conectar con Ollama.
-- Contexto analítico resumido para evitar enviar todo el dataset al LLM.
-- Explicación local de respaldo cuando Ollama no está disponible.
+- Carga y limpieza automatizada de un dataset tabular real.
+- Auditoría de calidad de datos (valores nulos, tipos de variables y duplicados).
+- Análisis de correlaciones numéricas y demostración de modelos de regresión lineal.
+- Análisis segmentado de la tasa de cancelación (*Churn*) por variables categóricas clave (como contratos y servicios).
+- Visualizaciones interactivas y dinámicas impulsadas por Plotly.
+- Integración de un agente inteligente local mediante un cliente HTTP dedicado y **Ollama (Llama 3.2:3b)**.
+- Contexto analítico resumido e inyectado al LLM para optimizar las respuestas del consultor de IA.
+- Organización del código bajo una estricta arquitectura modular reutilizable.
 
 ## Estructura
 
-```text
-Demo_Proyecto_Final_Streamlit_Ollama_ScikitLearn/
+proyecto-final-streamlit/
 ├── app.py
-├── create_demo_data.py
 ├── requirements.txt
 ├── README.md
-├── ARCHITECTURE.md
-├── START_HERE.txt
 ├── run_app.bat
-├── run_app.command
 ├── data/
-│   └── diabetes_sklearn.csv
-└── modules/
+│   └── Telco-Customer-Churn.csv
+└── src/
     ├── __init__.py
-    ├── data.py
+    ├── data_loader.py
     ├── analytics.py
     ├── visualizations.py
+    ├── llm_client.py
     └── agent.py
-```
 
 ## 1. Crear entorno virtual
 
 ### Windows
 
-```bash
 python -m venv .venv
 .venv\Scripts\activate
-```
 
 ### macOS / Linux
 
-```bash
 python3 -m venv .venv
 source .venv/bin/activate
-```
+
 
 ## 2. Instalar dependencias
 
-```bash
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-```
+
 
 ## 3. Ollama
 
 Instalar Ollama desde su sitio oficial y, con el servicio activo, descargar un modelo ligero:
 
-```bash
 ollama pull llama3.2:3b
-```
 
 En equipos con recursos limitados puede usarse:
 
-```bash
 ollama pull llama3.2:1b
-```
+
 
 ## 4. Ejecutar
 
-```bash
-python -m streamlit run app.py
-```
+.\run_app.bat
 
-La aplicación funciona en modo analítico aun si Ollama no está disponible. El agente mostrará una explicación local de respaldo.
+La aplicación cuenta con mecanismos de control de errores y se ejecutará de forma fluida. Si el servidor local de Ollama no se encuentra activo, el agente notificará el estado de la conexión de manera controlada.
+
 
 ## GitHub
 
-El proyecto está preparado para ser subido a GitHub. Para el proyecto final, el `README.md` debe documentar claramente instalación, dependencias, modelo de Ollama y ejecución local.
+El proyecto está estructurado y documentado conforme a los estándares de reproducibilidad y buenas prácticas para la presentación de trabajos finales.
