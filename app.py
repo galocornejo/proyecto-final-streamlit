@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from src.data_loader import cargar_y_limpiar_datos
-from src.analytics import missing_report, numeric_summary, target_correlations, train_regression_demo, build_agent_context, analizar_churn_por_grupo
+from src.analytics import missing_report, numeric_summary, target_correlations, train_regression_demo, build_agent_context, analizar_churn_por_grupo, calcular_tasas_globales_churn, analizar_churn_numerico
 from src.visualizations import grafico_distribucion, grafico_caja, grafico_dispersion
 from src.agent import AgenteDatos
 
@@ -40,10 +40,13 @@ tab1, tab2, tab3, tab4 = st.tabs([
 with tab1:
     st.header("Reporte de Calidad y Resumen Estadístico")
     
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Total Filas", df.shape[0])
-    col2.metric("Total Columnas", df.shape[1])
-    col3.metric("Filas Duplicadas", int(df.duplicated().sum()))
+    metricas = calcular_tasas_globales_churn(df)
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric("Total Registros", f"{metricas['total_clientes']:,}")
+    col2.metric("Tasa de Abandono", f"{metricas['churn_rate']}%", delta=f"{metricas['clientes_baja']} clientes", delta_color="inverse")
+    col3.metric("Tasa de Retención", f"{metricas['retention_rate']}%", delta=f"{metricas['clientes_activos']} clientes", delta_color="normal")
+    col4.metric("Total Columnas", df.shape[1])
+    col5.metric("Filas Duplicadas", int(df.duplicated().sum()))
     
     st.subheader("Auditoría de Datos y Tipos")
     df_missing = missing_report(df)
@@ -131,6 +134,16 @@ with tab2:
                 st.warning("No se pudo calcular la segmentación.")
         else:
             st.warning("No hay variables categóricas o falta la columna Churn.")
+
+        # --- Comparativa Numérica frente al Churn ---
+        st.markdown("---")
+        st.subheader("Comparativa de Promedios Numéricos según Estado de Churn")
+        df_num_churn = analizar_churn_numerico(df)
+        if not df_num_churn.empty:
+            st.dataframe(df_num_churn, width='stretch')
+            st.caption("Muestra los valores medios de permanencia y cargos económicos agrupados por clientes que permanecen (No) frente a los que cancelan (Yes).")
+        else:
+            st.info("No se pudo generar la comparativa numérica.")
 
 # ==========================================
 # PESTAÑA 3: Visualización Interactiva

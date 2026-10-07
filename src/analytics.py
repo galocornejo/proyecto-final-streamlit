@@ -125,3 +125,40 @@ def analizar_churn_por_grupo(df: pd.DataFrame, grupo_col: str) -> pd.DataFrame:
     
     tabla = pd.crosstab(df[grupo_col], df['Churn'], normalize='index') * 100
     return tabla.round(2).reset_index()
+
+def calcular_tasas_globales_churn(df: pd.DataFrame) -> dict:
+    """
+    Calcula el volumen y las tasas porcentuales globales de Churn y Retención.
+    """
+    if 'Churn' not in df.columns:
+        return {"total_clientes": len(df), "clientes_baja": 0, "clientes_activos": 0, "churn_rate": 0.0, "retention_rate": 0.0}
+    
+    total = len(df)
+    conteo = df['Churn'].value_counts()
+    bajas = int(conteo.get('Yes', 0))
+    activos = int(conteo.get('No', 0))
+    
+    churn_pct = round((bajas / total) * 100, 2) if total > 0 else 0.0
+    retention_pct = round((activos / total) * 100, 2) if total > 0 else 0.0
+    
+    return {
+        "total_clientes": total,
+        "clientes_baja": bajas,
+        "clientes_activos": activos,
+        "churn_rate": churn_pct,
+        "retention_rate": retention_pct
+    }
+
+def analizar_churn_numerico(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calcula los estadísticos de las variables numéricas agrupados por la variable Churn.
+    """
+    if 'Churn' not in df.columns:
+        return pd.DataFrame()
+    numeric_cols = list(df.select_dtypes(include="number").columns)
+    if not numeric_cols:
+        return pd.DataFrame()
+    
+    resumen = df.groupby('Churn')[numeric_cols].mean().T.reset_index()
+    resumen.columns = ['Variable', 'Churn_No', 'Churn_Yes']
+    return resumen.round(2)
